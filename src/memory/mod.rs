@@ -11,3 +11,4 @@ pub use readonly::ReadOnly;
 pub use work::Work;
 pub use video::Video;
 pub use address::Addressing;
+pub use siaddressing::SpaceInvadersAddressing;
