@@ -1,9 +1,9 @@
-use crate::memory::{Addressing, Memory, Work};
+use crate::memory::{ Memory};
 
 /// 只读内存
 pub struct ReadOnly {
     /// 读取的数据
-    data: Box<[u8; 2048]>,
+    pub data: Box<[u8; 2048]>,
     /// 地址偏移量
     ofs: u16,
 }
@@ -14,7 +14,7 @@ impl Memory for ReadOnly {
     }
 
     /// ReadOnly 所以不允许修改
-    fn set(&mut self, addr: u16, val: u8) {}
+    fn set(&mut self, _addr: u16, _val: u8) {}
 }
 
 impl ReadOnly {
@@ -24,6 +24,8 @@ impl ReadOnly {
             ofs,
         }
     }
+
+
 }
 
 

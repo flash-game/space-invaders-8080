@@ -56,21 +56,21 @@ impl Register {
 
     pub fn get_flags(&self) -> u8 {
         // S:7  Z:6  A:4  P:2  C:0
-        let mut flags = 0b0000_0000;
-        flags = flags | u8::from(self.flag_s) << 7;
-        flags = flags | u8::from(self.flag_z) << 6;
-        flags = flags | u8::from(self.flag_ac) << 4;
-        flags = flags | u8::from(self.flag_p) << 2;
-        flags = flags | u8::from(self.flag_cy);
-        flags
+        let mut bits = 0b0000_0010;
+        if self.flag_z { bits |= 0b0100_0000 }
+        if self.flag_s { bits |= 0b1000_0000 }
+        if self.flag_p { bits |= 0b0000_0100 }
+        if self.flag_cy { bits |= 0b0000_0001 }
+        if self.flag_ac { bits |= 0b0001_0000 }
+        bits
     }
 
     pub fn set_flags(&mut self, flags: u8) {
         // S:7  Z:6  A:4  P:2  C:0
-        self.flag_s = flags & 0b1000_0000 != 0;
         self.flag_z = flags & 0b0100_0000 != 0;
-        self.flag_ac = flags & 0b0001_0000 != 0;
+        self.flag_s = flags & 0b1000_0000 != 0;
         self.flag_p = flags & 0b0000_0100 != 0;
         self.flag_cy = flags & 0b0000_0001 != 0;
+        self.flag_ac = flags & 0b0001_0000 != 0;
     }
 }
