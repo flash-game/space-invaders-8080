@@ -1,6 +1,8 @@
-# space-invaders Emulator
-一个使用Rust编写的《太空侵略者》模拟器
+
 <div align="center">
+<h2> space-invaders Emulator</h2>
+一个使用Rust编写的《太空侵略者》仿真器
+<br>
 <br>
 <img width=300 src="https://raw.githubusercontent.com/flash-game/space-invaders-8080/master/resource/space.webp" />
 </div>
@@ -13,3 +15,13 @@ CPU部分使用Rust实现了Intel的 8080 CPU
 
 ## 太空侵略者
 > 《太空侵略者》（日语：スペースインベーダー，英语：Space Invaders）为日本太东公司于1978年发行之一款街机游戏，在美国由Midway发行。常简称为《侵略者》，或翻做《宇宙入侵者》。因他厂跟风游戏采昆虫造型，而在台湾对此类游戏昵称“小蜜蜂”。<br><br> 游戏规格是基于Intel公司8位元的Intel 8080处理器而设计的。
+
+## How to build
+```
+cargo build --release
+```
+
+## How to run
+```
+.\target\release\space-invaders-8080.exe
+```
