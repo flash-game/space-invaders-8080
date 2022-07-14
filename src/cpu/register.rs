@@ -30,11 +30,17 @@ impl Register {
         (self.a as u16) << 8 | (self.get_flags() as u16)
     }
 
-    pub fn get_bc(&self) -> u16 { (self.b as u16) << 8 | (self.c as u16) }
+    pub fn get_bc(&self) -> u16 {
+        (self.b as u16) << 8 | (self.c as u16)
+    }
 
-    pub fn get_de(&self) -> u16 { (self.d as u16) << 8 | (self.e as u16) }
+    pub fn get_de(&self) -> u16 {
+        (self.d as u16) << 8 | (self.e as u16)
+    }
 
-    pub fn get_hl(&self) -> u16 { (self.h as u16) << 8 | (self.l as u16) }
+    pub fn get_hl(&self) -> u16 {
+        (self.h as u16) << 8 | (self.l as u16)
+    }
 
     // Also known as 'B' in Intel Doc
     pub fn set_bc(&mut self, value: u16) {
@@ -57,11 +63,21 @@ impl Register {
     pub fn get_flags(&self) -> u8 {
         // S:7  Z:6  A:4  P:2  C:0
         let mut bits = 0b0000_0010;
-        if self.flag_z { bits |= 0b0100_0000 }
-        if self.flag_s { bits |= 0b1000_0000 }
-        if self.flag_p { bits |= 0b0000_0100 }
-        if self.flag_cy { bits |= 0b0000_0001 }
-        if self.flag_ac { bits |= 0b0001_0000 }
+        if self.flag_z {
+            bits |= 0b0100_0000
+        }
+        if self.flag_s {
+            bits |= 0b1000_0000
+        }
+        if self.flag_p {
+            bits |= 0b0000_0100
+        }
+        if self.flag_cy {
+            bits |= 0b0000_0001
+        }
+        if self.flag_ac {
+            bits |= 0b0001_0000
+        }
         bits
     }
 

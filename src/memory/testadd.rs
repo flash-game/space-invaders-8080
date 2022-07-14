@@ -1,7 +1,7 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use crate::memory::{AddressBus};
+use crate::memory::AddressBus;
 
 pub struct TestAddressing {
     rom: Rc<RefCell<Vec<u8>>>,
@@ -19,8 +19,6 @@ impl AddressBus for TestAddressing {
 
 impl TestAddressing {
     pub fn new(rom: Rc<RefCell<Vec<u8>>>) -> Self {
-        Self {
-            rom
-        }
+        Self { rom }
     }
 }

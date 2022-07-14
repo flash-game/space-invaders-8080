@@ -1,7 +1,7 @@
-mod io;
 pub mod cpu;
+mod io;
 pub mod register;
 
 pub use cpu::Cpu;
-pub use register::Register;
 pub use io::IO;
+pub use register::Register;

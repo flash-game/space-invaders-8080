@@ -1,14 +1,13 @@
+pub mod address;
+mod memory;
+mod readonly;
 mod testadd;
 mod video;
 mod work;
-mod readonly;
-mod memory;
-pub mod address;
 
-
+pub use address::AddressBus;
 pub use memory::Memory;
 pub use readonly::ReadOnly;
-pub use work::Work;
-pub use video::Video;
-pub use address::AddressBus;
 pub use testadd::TestAddressing;
+pub use video::Video;
+pub use work::Work;

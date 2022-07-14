@@ -1,5 +1,3 @@
-use std::sync::{Arc, RwLock};
-
 use crate::memory::Memory;
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -25,9 +23,6 @@ impl Memory for Video {
 
 impl Video {
     pub fn init(ofs: u16, data: Rc<RefCell<Vec<u8>>>) -> Video {
-        Video {
-            data,
-            ofs,
-        }
+        Video { data, ofs }
     }
 }

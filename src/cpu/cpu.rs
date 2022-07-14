@@ -2,8 +2,8 @@ use std::cell::RefCell;
 use std::mem;
 use std::rc::Rc;
 
-use crate::cpu::IO;
 use crate::cpu::register::Register;
+use crate::cpu::IO;
 use crate::memory::address::AddressBus;
 use crate::util::U16Util;
 
@@ -52,7 +52,8 @@ impl Cpu {
 
     fn get_next_word(&mut self) -> u16 {
         let addr = self.register.pc;
-        let word = U16Util::from_le_bytes(self.addring.get_mem(addr), self.addring.get_mem(addr + 1));
+        let word =
+            U16Util::from_le_bytes(self.addring.get_mem(addr), self.addring.get_mem(addr + 1));
         self.register.pc += 2;
         word
     }
@@ -252,7 +253,6 @@ impl Cpu {
         self.register.pc = u16::from(opcode & 0x38);
     }
 
-
     /// 下一步指令
     pub fn next(&mut self) -> u8 {
         let op_code = self.get_next_byte();
@@ -266,7 +266,9 @@ impl Cpu {
                 self.register.b = self.get_next_byte();
             }
             // STAX B       1                      (BC) <- A
-            0x02 => self.addring.set_mem(self.register.get_bc(), self.register.a),
+            0x02 => self
+                .addring
+                .set_mem(self.register.get_bc(), self.register.a),
             // INX B        1                      BC <- BC+1
             0x03 => self.register.set_bc(self.register.get_bc().wrapping_add(1)),
             // INR B        1    Z, S, P, AC       B <- B+1
@@ -313,7 +315,9 @@ impl Cpu {
                 self.register.set_de(word);
             }
             // STAX D       1                      (DE) <- A
-            0x12 => self.addring.set_mem(self.register.get_de(), self.register.a),
+            0x12 => self
+                .addring
+                .set_mem(self.register.get_de(), self.register.a),
             // INX D        1                      DE <- DE + 1
             0x13 => self.register.set_de(self.register.get_de().wrapping_add(1)),
             // INR D        1    Z, S, P, AC       D <- D+1
@@ -541,21 +545,35 @@ impl Cpu {
             // MOV L,A      1                       L <- A
             0x6f => self.register.l = self.register.a,
             // MOV M,B      1                       (HL) <- B
-            0x70 => self.addring.set_mem(self.register.get_hl(), self.register.b),
+            0x70 => self
+                .addring
+                .set_mem(self.register.get_hl(), self.register.b),
             // MOV M,C      1                       (HL) <- C
-            0x71 => self.addring.set_mem(self.register.get_hl(), self.register.c),
+            0x71 => self
+                .addring
+                .set_mem(self.register.get_hl(), self.register.c),
             // MOV M,D      1                       (HL) <- D
-            0x72 => self.addring.set_mem(self.register.get_hl(), self.register.d),
+            0x72 => self
+                .addring
+                .set_mem(self.register.get_hl(), self.register.d),
             // MOV M,E      1                       (HL) <- E
-            0x73 => self.addring.set_mem(self.register.get_hl(), self.register.e),
+            0x73 => self
+                .addring
+                .set_mem(self.register.get_hl(), self.register.e),
             // MOV M,H      1                       (HL) <- H
-            0x74 => self.addring.set_mem(self.register.get_hl(), self.register.h),
+            0x74 => self
+                .addring
+                .set_mem(self.register.get_hl(), self.register.h),
             // MOV M,L      1                       (HL) <- L
-            0x75 => self.addring.set_mem(self.register.get_hl(), self.register.l),
+            0x75 => self
+                .addring
+                .set_mem(self.register.get_hl(), self.register.l),
             // HLT          1                       special   HALT INSTRUCTION
             0x76 => ::std::process::exit(0),
             // MOV M,A      1                       (HL) <- A
-            0x77 => self.addring.set_mem(self.register.get_hl(), self.register.a),
+            0x77 => self
+                .addring
+                .set_mem(self.register.get_hl(), self.register.a),
             // MOV A,B      1                       A <- B
             0x78 => self.register.a = self.register.b,
             // MOV A,C      1                       A <- C
@@ -701,7 +719,11 @@ impl Cpu {
             // CMP A        1    Z, S, P, CY, AC    A - A
             0xbf => self.cmp(self.register.a),
             // RNZ          1                       if NZ, RET
-            0xc0 => if !self.register.flag_z { self.register.pc = self.stack_pop(); },
+            0xc0 => {
+                if !self.register.flag_z {
+                    self.register.pc = self.stack_pop();
+                }
+            }
             // POP B        1                       C <- (sp); B <- (sp+1); sp <- sp+2
             0xc1 => {
                 let value = self.stack_pop();
@@ -723,7 +745,11 @@ impl Cpu {
             // RST 0        1                       CALL $0
             0xc7 => self.rst(op_code),
             // RZ           1                       if Z, RET
-            0xc8 => if self.register.flag_z { self.register.pc = self.stack_pop(); },
+            0xc8 => {
+                if self.register.flag_z {
+                    self.register.pc = self.stack_pop();
+                }
+            }
             // RET          1                       PC.lo <- (sp); PC.hi<-(sp+1); SP <- SP+2
             0xc9 => self.register.pc = self.stack_pop(),
             // JZ adr       3                       if Z, PC <- adr
@@ -746,7 +772,11 @@ impl Cpu {
             // RST 1        1                       CALL $8
             0xcf => self.rst(op_code),
             // RNC          1                       if NCY, RET
-            0xd0 => if !self.register.flag_cy { self.register.pc = self.stack_pop(); },
+            0xd0 => {
+                if !self.register.flag_cy {
+                    self.register.pc = self.stack_pop();
+                }
+            }
             // POP D        1                       E <- (sp); D <- (sp+1); sp <- sp+2
             0xd1 => {
                 let value = self.stack_pop();
@@ -771,7 +801,11 @@ impl Cpu {
             // RST 2        1                       CALL $10
             0xd7 => self.rst(op_code),
             // RC           1                       if CY, RET
-            0xd8 => if self.register.flag_cy { self.register.pc = self.stack_pop(); },
+            0xd8 => {
+                if self.register.flag_cy {
+                    self.register.pc = self.stack_pop();
+                }
+            }
             // - 0xC9
             0xd9 => self.register.pc = self.stack_pop(),
             // JC adr       3                       if CY, PC<-adr
@@ -779,7 +813,7 @@ impl Cpu {
             // IN D8        2                       special
             0xdb => {
                 let byte = self.get_next_byte();
-                let mut io = self.io.clone();
+                let io = self.io.clone();
                 io.borrow_mut().input(self, byte);
             }
             // CC adr       3                       if CY, CALL adr
@@ -794,7 +828,11 @@ impl Cpu {
             // RST 3        1                       CALL $18
             0xdf => self.rst(op_code),
             // RPO          1                       if PO, RET
-            0xe0 => if !self.register.flag_p { self.register.pc = self.stack_pop(); },
+            0xe0 => {
+                if !self.register.flag_p {
+                    self.register.pc = self.stack_pop();
+                }
+            }
             // POP H        1                       L <- (sp); H <- (sp+1); sp <- sp+2
             0xe1 => {
                 let value = self.stack_pop();
@@ -821,7 +859,11 @@ impl Cpu {
             // RST 4        1                       CALL $20
             0xe7 => self.rst(op_code),
             // RPE          1                       if PE, RET
-            0xe8 => if self.register.flag_p { self.register.pc = self.stack_pop(); },
+            0xe8 => {
+                if self.register.flag_p {
+                    self.register.pc = self.stack_pop();
+                }
+            }
             // PCHL         1                       PC.hi <- H; PC.lo <- L
             0xe9 => self.register.pc = self.register.get_hl(),
             // JPE adr      3                       if PE, PC <- adr
@@ -843,7 +885,11 @@ impl Cpu {
             // RST 5        1                       CALL $28
             0xef => self.rst(op_code),
             // RP           1                       if P, RET
-            0xf0 => if !self.register.flag_s { self.register.pc = self.stack_pop(); },
+            0xf0 => {
+                if !self.register.flag_s {
+                    self.register.pc = self.stack_pop();
+                }
+            }
             // POP PSW      1                       flags <- (sp); A <- (sp+1); sp <- sp+2
             0xf1 => {
                 let value = self.stack_pop();
@@ -858,7 +904,9 @@ impl Cpu {
             0xf4 => ex_cycle = self.condition_call(!self.register.flag_s),
             // PUSH PSW     1                       (sp-2)<-flags; (sp-1)<-A; sp <- sp - 2
             0xf5 => {
-                self.stack_add((u16::from(self.register.a) << 8) | u16::from(self.register.get_flags()));
+                self.stack_add(
+                    (u16::from(self.register.a) << 8) | u16::from(self.register.get_flags()),
+                );
             }
             // ORI D8       2    Z, S, P, CY, AC    A <- A | data
             0xf6 => {
@@ -868,7 +916,11 @@ impl Cpu {
             // RST 6        1                       CALL $30
             0xf7 => self.rst(op_code),
             // RM           1                       if M, RET
-            0xf8 => if self.register.flag_s { self.register.pc = self.stack_pop(); },
+            0xf8 => {
+                if self.register.flag_s {
+                    self.register.pc = self.stack_pop();
+                }
+            }
             // SPHL         1                       SP=HL
             0xf9 => self.register.sp = self.register.get_hl(),
             // JM adr       3                       if M, PC <- adr
@@ -886,7 +938,7 @@ impl Cpu {
             }
             // RST 7        1                       CALL $38
             0xff => self.rst(op_code),
-            n => println!("unknow opcode 0x{:X}", n)
+            n => println!("unknow opcode 0x{:X}", n),
         };
         return if ex_cycle {
             OP_CYCLES[op_code as usize] + 6
@@ -905,7 +957,6 @@ impl Cpu {
         };
     }
 }
-
 
 //  0   1   2   3   4   5   6   7   8   9   a   b   c   d   e   f
 const OP_CYCLES: [u8; 256] = [
@@ -926,4 +977,3 @@ const OP_CYCLES: [u8; 256] = [
     05, 10, 10, 18, 11, 11, 07, 11, 05, 05, 10, 05, 11, 17, 07, 11, // e
     05, 10, 10, 04, 11, 11, 07, 11, 05, 05, 10, 04, 11, 17, 07, 11, // f
 ];
-

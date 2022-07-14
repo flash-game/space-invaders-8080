@@ -1,4 +1,4 @@
-use crate::memory::{ Memory};
+use crate::memory::Memory;
 
 /// 只读内存
 pub struct ReadOnly {
@@ -19,13 +19,6 @@ impl Memory for ReadOnly {
 
 impl ReadOnly {
     pub fn init(ofs: u16, data: Box<[u8; 2048]>) -> ReadOnly {
-        ReadOnly {
-            data,
-            ofs,
-        }
+        ReadOnly { data, ofs }
     }
-
-
 }
-
-

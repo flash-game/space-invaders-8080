@@ -16,9 +16,10 @@ const HEIGHT: usize = 256;
 
 impl Display {
     pub fn new(video_arr: Rc<RefCell<Vec<u8>>>) -> Self {
-        let mut window = Window::new(
+        let window = Window::new(
             format!("{} - Powered by Jelipo", GAME_NAME).as_str(),
-            WIDTH, HEIGHT,
+            WIDTH,
+            HEIGHT,
             WindowOptions {
                 borderless: true,
                 transparency: false,
@@ -27,8 +28,10 @@ impl Display {
                 scale: Scale::X2,
                 scale_mode: ScaleMode::Stretch,
                 topmost: false,
+                none: false,
             },
-        ).unwrap_or_else(|e| {
+        )
+        .unwrap_or_else(|e| {
             panic!("{}", e);
         });
         Self {
@@ -41,19 +44,24 @@ impl Display {
     /// This is block method
     pub fn start(&mut self) {
         // 限制最高60帧
-        self.window.limit_update_rate(Some(std::time::Duration::from_micros(16667)));
+        self.window
+            .limit_update_rate(Some(std::time::Duration::from_micros(16667)));
 
         let mut lasttime = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
         while self.window.is_open() && !self.window.is_key_down(Key::Escape) {
             lasttime = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
             self.set_buffer(self.video_arr.clone());
-            self.window.update_with_buffer(&self.buffer, WIDTH, HEIGHT).unwrap();
+            self.window
+                .update_with_buffer(&self.buffer, WIDTH, HEIGHT)
+                .unwrap();
         }
     }
 
     pub fn update_cycle(&mut self) -> Option<Key> {
         self.set_buffer(self.video_arr.clone());
-        self.window.update_with_buffer(&self.buffer, WIDTH, HEIGHT).unwrap();
+        self.window
+            .update_with_buffer(&self.buffer, WIDTH, HEIGHT)
+            .unwrap();
         return if self.window.is_key_down(Key::Left) {
             Some(Key::Left)
         } else if self.window.is_key_down(Key::Right) {
@@ -75,7 +83,7 @@ impl Display {
             let gpu_byte = gpu_ram[i];
             // display_point
             let dp = i * 8;
-            let buffer_size = self.buffer.len();
+            let _buffer_size = self.buffer.len();
             self.set_point(dp, get_color(gpu_byte & 0b0000_0001));
             self.set_point(dp + 1, get_color(gpu_byte & 0b0000_0010));
             self.set_point(dp + 2, get_color(gpu_byte & 0b0000_0100));
@@ -97,7 +105,3 @@ impl Display {
 fn get_color(bit: u8) -> u32 {
     return if bit == 0 { 0 } else { u32::max_value() };
 }
-
-
-
-

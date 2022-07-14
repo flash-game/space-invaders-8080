@@ -1,17 +1,16 @@
-use std::{io, thread};
 use std::cell::RefCell;
 use std::fs::File;
 use std::io::Read;
 use std::rc::Rc;
-use std::sync::{Arc, RwLock};
+
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
+use std::{io, thread};
 
 use crate::cpu::Cpu;
-use crate::game::invaders::gameio::InvadersIO;
 use crate::game::invaders::display::Display;
-use crate::game::Launch;
+use crate::game::invaders::gameio::InvadersIO;
 use crate::game::invaders::InvadersAddressBus;
-
+use crate::game::Launch;
 
 pub struct InvadersLaunch {}
 
@@ -22,7 +21,7 @@ impl Launch for InvadersLaunch {
         let video_arr = Rc::new(RefCell::new(gpu_ram));
         let video_arr_cloned = video_arr.clone();
 
-        let addressing = init_address(video_arr_cloned.clone()).unwrap();
+        let addressing = init_address(video_arr_cloned).unwrap();
 
         let io = Rc::new(RefCell::new(InvadersIO::new()));
         let mut cpu = Cpu::new(Box::new(addressing), 0, io.clone());
@@ -30,12 +29,12 @@ impl Launch for InvadersLaunch {
         let mut time = get_mill_time();
         let mut int_times = 0;
         let cycle_max: u32 = 17476;
-        let max_fps: u8 = 60;
+        let _max_fps: u8 = 60;
         let mut fps_temp: u8 = 0;
         let mut fps_timelinei128 = get_mill_time();
-        let mut video = Display::new(video_arr.clone());
+        let mut video = Display::new(video_arr);
         //video.start();
-        let loop_io = io.clone();
+        let loop_io = io;
         loop {
             let mut cycle_temp: u32 = 0;
             loop {
@@ -68,7 +67,7 @@ impl Launch for InvadersLaunch {
                 let key_option = video.update_cycle();
                 match key_option {
                     Some(key) => loop_io.borrow_mut().set_input_temp(key),
-                    None => loop_io.borrow_mut().clean_temp()
+                    None => loop_io.borrow_mut().clean_temp(),
                 }
 
                 fps_temp += 1;
@@ -85,7 +84,7 @@ impl Launch for InvadersLaunch {
                     fps_temp = 0;
                     fps_timelinei128 = time_now;
                 } else {
-                    let sleep = ((1000 as u16).saturating_sub(i)) / (60 - fps_temp) as u16;
+                    let sleep = (1000_u16.saturating_sub(i)) / (60 - fps_temp) as u16;
                     if sleep != 0 {
                         //println!("睡眠 {}ms", sleep);
                         thread::sleep(Duration::from_micros(sleep as u64));
@@ -99,11 +98,17 @@ impl Launch for InvadersLaunch {
 }
 
 fn get_mill_time() -> u128 {
-    SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis()
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_millis()
 }
 
 fn get_micro_time() -> u128 {
-    SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_micros()
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_micros()
 }
 
 impl InvadersLaunch {
@@ -115,21 +120,26 @@ impl InvadersLaunch {
 fn init_address(video_arr: Rc<RefCell<Vec<u8>>>) -> io::Result<InvadersAddressBus> {
     let mut arr_h = [0u8; 2048];
     let mut h = File::open("./res/invaders.h")?;
-    h.read(&mut arr_h)?;
+    h.read_exact(&mut arr_h)?;
 
     let mut arr_g = [0u8; 2048];
     let mut g = File::open("./res/invaders.g")?;
-    g.read(&mut arr_g)?;
+    g.read_exact(&mut arr_g)?;
 
     let mut arr_f = [0u8; 2048];
     let mut f = File::open("./res/invaders.f")?;
-    f.read(&mut arr_f)?;
+    f.read_exact(&mut arr_f)?;
 
     let mut arr_e = [0u8; 2048];
     let mut e = File::open("./res/invaders.e")?;
-    e.read(&mut arr_e)?;
+    e.read_exact(&mut arr_e)?;
 
     let addressing = InvadersAddressBus::new(
-        Box::new(arr_h), Box::new(arr_g), Box::new(arr_f), Box::new(arr_e), video_arr);
+        Box::new(arr_h),
+        Box::new(arr_g),
+        Box::new(arr_f),
+        Box::new(arr_e),
+        video_arr,
+    );
     Ok(addressing)
 }

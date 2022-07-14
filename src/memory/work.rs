@@ -20,9 +20,6 @@ impl Memory for Work {
 
 impl Work {
     pub fn init(ofs: u16, data: Box<[u8; 1024]>) -> Work {
-        Work {
-            data,
-            ofs,
-        }
+        Work { data, ofs }
     }
 }
