@@ -1,6 +1,7 @@
 use minifb::Key;
 
 use crate::cpu::{Cpu, IO};
+use crate::cpu::Register;
 
 pub struct InvadersIO {
     input_temp: Option<Key>,
@@ -21,7 +22,7 @@ impl InvadersIO {
 }
 
 impl IO for InvadersIO {
-    fn input(&mut self, cpu: &mut Cpu, byte: u8) {
+    fn input(&mut self, cpu: &mut Register, byte: u8) {
         let input_key = match self.input_temp {
             None => {
                 //println!("执行input {:X}", byte);
@@ -50,7 +51,7 @@ impl IO for InvadersIO {
             _ => None,
         };
         match reg_a {
-            Some(a) => cpu.register.a = a,
+            Some(a) => cpu.a = a,
             _ => {}
         }
         self.input_temp = None;

@@ -2,8 +2,8 @@ use std::cell::RefCell;
 use std::mem;
 use std::rc::Rc;
 
-use crate::cpu::register::Register;
 use crate::cpu::IO;
+use crate::cpu::register::Register;
 use crate::memory::address::AddressBus;
 use crate::util::U16Util;
 
@@ -813,8 +813,8 @@ impl Cpu {
             // IN D8        2                       special
             0xdb => {
                 let byte = self.get_next_byte();
-                let io = self.io.clone();
-                io.borrow_mut().input(self, byte);
+                let ref_mut = &mut self.io;
+                ref_mut.borrow_mut().input(&mut self.register, byte);
             }
             // CC adr       3                       if CY, CALL adr
             0xdc => ex_cycle = self.condition_call(self.register.flag_cy),
