@@ -78,7 +78,7 @@ impl Launch for InvadersLaunch {
                     if i < 1000 {
                         let sleep = 1000 - i;
                         println!("补充睡眠 {}ms", sleep);
-                        thread::sleep(Duration::from_micros(sleep as u64));
+                        thread::sleep(Duration::from_millis(sleep as u64));
                     }
                     println!("重置 {}", time_now);
                     fps_temp = 0;
@@ -87,7 +87,7 @@ impl Launch for InvadersLaunch {
                     let sleep = (1000_u16.saturating_sub(i)) / (60 - fps_temp) as u16;
                     if sleep != 0 {
                         //println!("睡眠 {}ms", sleep);
-                        thread::sleep(Duration::from_micros(sleep as u64));
+                        thread::sleep(Duration::from_millis(sleep as u64));
                     }
                 }
             } else {
