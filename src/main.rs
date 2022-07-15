@@ -2,6 +2,7 @@ use crate::game::{InvadersLaunch, Launch};
 
 mod util;
 
+mod cosnt;
 mod cpu;
 mod game;
 mod memory;

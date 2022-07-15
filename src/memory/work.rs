@@ -1,9 +1,10 @@
+use bytes::{BufMut, Bytes, BytesMut};
 use crate::memory::Memory;
 
 /// 工作内存
 pub struct Work {
     /// 读取的数据
-    data: Box<[u8; 1024]>,
+    data: BytesMut,
     /// 地址偏移量
     ofs: u16,
 }
@@ -19,7 +20,7 @@ impl Memory for Work {
 }
 
 impl Work {
-    pub fn init(ofs: u16, data: Box<[u8; 1024]>) -> Work {
+    pub fn init(ofs: u16, data: BytesMut) -> Work {
         Work { data, ofs }
     }
 }

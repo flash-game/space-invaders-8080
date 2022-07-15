@@ -1,9 +1,10 @@
 use crate::memory::Memory;
+use bytes::Bytes;
 
 /// 只读内存
 pub struct ReadOnly {
     /// 读取的数据
-    pub data: Box<[u8; 2048]>,
+    pub data: Bytes,
     /// 地址偏移量
     ofs: u16,
 }
@@ -18,7 +19,7 @@ impl Memory for ReadOnly {
 }
 
 impl ReadOnly {
-    pub fn init(ofs: u16, data: Box<[u8; 2048]>) -> ReadOnly {
+    pub fn init(ofs: u16, data: Bytes) -> ReadOnly {
         ReadOnly { data, ofs }
     }
 }

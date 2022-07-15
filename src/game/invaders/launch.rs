@@ -1,8 +1,9 @@
+use crate::cosnt::{SPACE_INVADERS_E, SPACE_INVADERS_F, SPACE_INVADERS_G, SPACE_INVADERS_H};
+use bytes::Bytes;
 use std::cell::RefCell;
 use std::fs::File;
 use std::io::Read;
 use std::rc::Rc;
-
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use std::{io, thread};
 
@@ -118,28 +119,10 @@ impl InvadersLaunch {
 }
 
 fn init_address(video_arr: Rc<RefCell<Vec<u8>>>) -> io::Result<InvadersAddressBus> {
-    let mut arr_h = [0u8; 2048];
-    let mut h = File::open("./res/invaders.h")?;
-    h.read_exact(&mut arr_h)?;
-
-    let mut arr_g = [0u8; 2048];
-    let mut g = File::open("./res/invaders.g")?;
-    g.read_exact(&mut arr_g)?;
-
-    let mut arr_f = [0u8; 2048];
-    let mut f = File::open("./res/invaders.f")?;
-    f.read_exact(&mut arr_f)?;
-
-    let mut arr_e = [0u8; 2048];
-    let mut e = File::open("./res/invaders.e")?;
-    e.read_exact(&mut arr_e)?;
-
-    let addressing = InvadersAddressBus::new(
-        Box::new(arr_h),
-        Box::new(arr_g),
-        Box::new(arr_f),
-        Box::new(arr_e),
-        video_arr,
-    );
+    let arr_h = Bytes::from_static(SPACE_INVADERS_H);
+    let arr_g = Bytes::from_static(SPACE_INVADERS_G);
+    let arr_f = Bytes::from_static(SPACE_INVADERS_F);
+    let arr_e = Bytes::from_static(SPACE_INVADERS_E);
+    let addressing = InvadersAddressBus::new(arr_h, arr_g, arr_f, arr_e, video_arr);
     Ok(addressing)
 }

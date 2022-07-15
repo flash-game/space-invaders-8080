@@ -8,3 +8,4 @@ edition = "2021"
 
 [dependencies]
 minifb = "0.23"
+bytes = "1.1.0"

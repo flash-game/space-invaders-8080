@@ -1,6 +1,8 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
+use bytes::{BufMut, Bytes, BytesMut};
+
 use crate::memory::{AddressBus, Memory, ReadOnly, Video, Work};
 
 pub struct InvadersAddressBus {
@@ -43,20 +45,24 @@ impl AddressBus for InvadersAddressBus {
 
 impl InvadersAddressBus {
     pub fn new(
-        h_arr: Box<[u8; 2048]>,
-        g_arr: Box<[u8; 2048]>,
-        f_arr: Box<[u8; 2048]>,
-        e_arr: Box<[u8; 2048]>,
+        h_arr: Bytes,
+        g_arr: Bytes,
+        f_arr: Bytes,
+        e_arr: Bytes,
         video_arr: Rc<RefCell<Vec<u8>>>,
     ) -> Self {
+        let mut work_ram = BytesMut::with_capacity(1024);
+        work_ram.put_bytes(0, 1024);
+        let mut work_ram2 = BytesMut::with_capacity(1024);
+        work_ram2.put_bytes(0, 1024);
         Self {
             read_only_h: ReadOnly::init(0, h_arr),
             read_only_g: ReadOnly::init(0x0800, g_arr),
             read_only_f: ReadOnly::init(0x1000, f_arr),
             read_only_e: ReadOnly::init(0x1800, e_arr),
-            work_ram: Work::init(0x2000, Box::new([0u8; 1024])),
+            work_ram: Work::init(0x2000, work_ram),
             video_ram: Video::init(0x2400, video_arr),
-            work_ram2: Work::init(0x4000, Box::new([0u8; 1024])),
+            work_ram2: Work::init(0x4000, work_ram2),
         }
     }
 }
